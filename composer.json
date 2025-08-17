@@ -1,0 +1,1 @@
+{ "name": "jani-shiv/budgetpro", "description": "A PHP project for budget management.", "require": {}, "autoload": { "psr-4": { "Budgetpro\\": "src/" } } }
