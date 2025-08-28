@@ -1,0 +1,20 @@
+{
+  "name": "@budgetpro/shared",
+  "version": "1.0.0",
+  "description": "Shared types, utilities, and constants for BudgetPro",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src/**/*.ts"
+  },
+  "dependencies": {
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0"
+  }
+}
