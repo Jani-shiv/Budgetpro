@@ -5,7 +5,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as Font from 'expo-font';
 
 // Screens
 import LoginScreen from './src/screens/LoginScreen';
@@ -71,18 +70,10 @@ function MainNavigator() {
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [fontsLoaded, setFontsLoaded] = useState(false);
 
   useEffect(() => {
     const loadApp = async () => {
       try {
-        // Load fonts
-        await Font.loadAsync({
-          'Inter-Regular': require('./assets/fonts/Inter-Regular.ttf'),
-          'Inter-Bold': require('./assets/fonts/Inter-Bold.ttf'),
-        });
-        setFontsLoaded(true);
-
         // Check authentication
         const token = await AsyncStorage.getItem('token');
         setIsAuthenticated(!!token);
@@ -96,7 +87,7 @@ export default function App() {
     loadApp();
   }, []);
 
-  if (isLoading || !fontsLoaded) {
+  if (isLoading) {
     return <LoadingScreen />;
   }
 
