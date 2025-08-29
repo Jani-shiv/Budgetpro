@@ -26,7 +26,7 @@ export const register = asyncHandler(async (req: AuthenticatedRequest, res: Resp
   });
 
   // Generate tokens
-  const payload = { id: user._id.toString(), email: user.email };
+  const payload = { id: (user._id as any).toString(), email: user.email };
   const accessToken = generateAccessToken(payload);
   const refreshToken = generateRefreshToken(payload);
 
@@ -58,7 +58,7 @@ export const login = asyncHandler(async (req: AuthenticatedRequest, res: Respons
   }
 
   // Generate tokens
-  const payload = { id: user._id.toString(), email: user.email };
+  const payload = { id: (user._id as any).toString(), email: user.email };
   const accessToken = generateAccessToken(payload);
   const refreshToken = generateRefreshToken(payload);
 
@@ -91,7 +91,7 @@ export const refreshToken = asyncHandler(async (req: AuthenticatedRequest, res: 
     }
 
     // Generate new tokens
-    const payload = { id: user._id.toString(), email: user.email };
+    const payload = { id: (user._id as any).toString(), email: user.email };
     const newAccessToken = generateAccessToken(payload);
     const newRefreshToken = generateRefreshToken(payload);
 

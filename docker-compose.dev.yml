@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  # MongoDB Database for Development
+  mongodb:
+    image: mongo:7.0
+    container_name: budgetpro-mongodb-dev
+    restart: unless-stopped
+    ports:
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_DATABASE: budgetpro
+    volumes:
+      - mongodb_dev_data:/data/db
+    networks:
+      - budgetpro-dev-network
+
+  # Redis for Caching (Optional)
+  redis:
+    image: redis:7.2-alpine
+    container_name: budgetpro-redis-dev
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    networks:
+      - budgetpro-dev-network
+
+volumes:
+  mongodb_dev_data:
+
+networks:
+  budgetpro-dev-network:
+    driver: bridge

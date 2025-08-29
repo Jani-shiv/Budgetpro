@@ -74,28 +74,25 @@ export const authenticate = async (
   }
 };
 
+
+import type { Secret, SignOptions } from 'jsonwebtoken';
+
 export const generateAccessToken = (payload: JWTPayload): string => {
-  if (!process.env.JWT_SECRET) {
+  const secret = process.env.JWT_SECRET as Secret;
+  if (!secret) {
     throw new Error('JWT secret is not configured');
   }
-  
-  return jwt.sign(
-    payload,
-    process.env.JWT_SECRET,
-    { expiresIn: process.env.JWT_EXPIRES_IN || '15m' }
-  );
+  const options: SignOptions = { expiresIn: (process.env.JWT_EXPIRES_IN || '15m') as any };
+  return jwt.sign(payload, secret, options);
 };
 
 export const generateRefreshToken = (payload: JWTPayload): string => {
-  if (!process.env.JWT_REFRESH_SECRET) {
+  const secret = process.env.JWT_REFRESH_SECRET as Secret;
+  if (!secret) {
     throw new Error('JWT refresh secret is not configured');
   }
-  
-  return jwt.sign(
-    payload,
-    process.env.JWT_REFRESH_SECRET,
-    { expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d' }
-  );
+  const options: SignOptions = { expiresIn: (process.env.JWT_REFRESH_EXPIRES_IN || '7d') as any };
+  return jwt.sign(payload, secret, options);
 };
 
 export const verifyRefreshToken = (token: string): JWTPayload => {

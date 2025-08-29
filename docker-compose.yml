@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:7.0
+    container_name: budgetpro-mongodb
+    restart: unless-stopped
+    ports:
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_DATABASE: budgetpro
+    volumes:
+      - mongodb_data:/data/db
+      - ./scripts/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - budgetpro-network
+
+  # API Backend
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: budgetpro-api
+    restart: unless-stopped
+    ports:
+      - '3001:3001'
+    environment:
+      NODE_ENV: development
+      PORT: 3001
+      MONGODB_URI: mongodb://admin:password123@mongodb:27017/budgetpro?authSource=admin
+      JWT_SECRET: development-jwt-secret-change-in-production
+      JWT_REFRESH_SECRET: development-refresh-secret-change-in-production
+      CORS_ORIGIN: http://localhost:3000
+    depends_on:
+      - mongodb
+    volumes:
+      - ./apps/api:/app
+      - /app/node_modules
+    networks:
+      - budgetpro-network
+
+  # Web Frontend
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    container_name: budgetpro-web
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:3001/api
+      NEXT_PUBLIC_APP_NAME: BudgetPro
+      NEXTAUTH_URL: http://localhost:3000
+      NEXTAUTH_SECRET: development-nextauth-secret
+    depends_on:
+      - api
+    volumes:
+      - ./apps/web:/app
+      - /app/node_modules
+      - /app/.next
+    networks:
+      - budgetpro-network
+
+volumes:
+  mongodb_data:
+
+networks:
+  budgetpro-network:
+    driver: bridge
